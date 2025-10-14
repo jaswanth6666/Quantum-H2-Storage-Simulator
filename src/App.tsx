@@ -1,46 +1,84 @@
-import { useState } from 'react';
-import { Atom, BarChart3, Settings, Database, FlaskConical, Zap, ChevronRight } from 'lucide-react';
-import Dashboard from './components/Dashboard';
-import SimulationConfig from './components/SimulationConfig';
-import ResultsView from './components/ResultsView';
-import DataManager from './components/DataManager';
+import React from "react";
+import { Settings, FlaskConical, Zap, Calculator, ChevronRight } from "lucide-react";
+import SimulationConfig from "./components/SimulationConfig";
+import ResultsView from "./components/ResultsView";
+import AnalysisPage from "./components/AnalysisPage";
+import { SimulationProvider, useSimulation } from "./components/SimulationContext";
+import logo from './Qubit-Quests-logo.png';
 
-type View = 'dashboard' | 'simulate' | 'results' | 'data';
 
-function App() {
-  const [currentView, setCurrentView] = useState<View>('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+type View = "simulate" | "results" | "analysis";
 
-  const navigation = [
-    { id: 'dashboard' as View, name: 'Dashboard', icon: BarChart3 },
-    { id: 'simulate' as View, name: 'New Simulation', icon: FlaskConical },
-    { id: 'results' as View, name: 'Results', icon: Zap },
-    { id: 'data' as View, name: 'Data Manager', icon: Database },
+/** Simple error boundary so bad renders don't blank the whole app */
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { err?: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { err: undefined };
+  }
+  static getDerivedStateFromError(err: any) {
+    return { err };
+  }
+  componentDidCatch(err: any) {
+    console.error(err);
+  }
+  render() {
+    if (this.state.err) {
+      return (
+        <div style={{ padding: 16, fontFamily: "ui-sans-serif, system-ui" }}>
+          <h2 style={{ color: "#b91c1c" }}>Render error</h2>
+          <pre style={{ whiteSpace: "pre-wrap", background: "#fee2e2", padding: 12, borderRadius: 8 }}>
+            {String(this.state.err?.message || this.state.err)}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function Shell() {
+  const { currentView, go } = useSimulation();
+  const sidebarOpen = true;
+
+  const navigation: { id: View; name: string; icon: any }[] = [
+    { id: "simulate", name: "New Simulation", icon: FlaskConical },
+    { id: "results", name: "Results", icon: Zap },
+    { id: "analysis", name: "Analysis", icon: Calculator },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 shadow-sm">
+      <header className="bg-white border-b shadow-sm border-slate-200">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-blue-600 to-cyan-500 p-2.5 rounded-xl shadow-lg">
-              <Atom className="h-6 w-6 text-white" strokeWidth={2.5} />
-            </div>
+            {/* Public asset (Option B). Put the file at: public/Qubit-Quests-logo.png */}
+
+             <img src={logo} alt="Qubit Quests Logo" className="w-20 h-auto" />
             <div>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">Quantum H₂ Storage Simulator</h1>
-              <p className="text-xs text-slate-500 font-medium">NH₃BH₃ with FLP Catalysis Analysis</p>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">
+                Quantum H₂ Storage Simulator
+              </h1>
+              <p className="text-xs font-medium text-slate-500">
+                NH₃BH₃ with FLP Catalysis Analysis
+              </p>
             </div>
           </div>
-          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-            <Settings className="h-5 w-5 text-slate-600" />
+
+          <button className="p-2 transition-colors rounded-lg hover:bg-slate-100">
+            <Settings className="w-5 h-5 text-slate-600" />
           </button>
         </div>
       </header>
 
+      {/* Body */}
       <div className="flex h-[calc(100vh-73px)]">
         {/* Sidebar */}
-        <aside className={`bg-white border-r border-slate-200 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'}`}>
+        <aside
+          className={`bg-white border-r border-slate-200 transition-all duration-300 ${
+            sidebarOpen ? "w-64" : "w-20"
+          }`}
+        >
           <nav className="p-4 space-y-2">
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -48,16 +86,16 @@ function App() {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setCurrentView(item.id)}
+                  onClick={() => go(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/30'
-                      : 'text-slate-700 hover:bg-slate-100'
+                      ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-700 hover:bg-slate-100"
                   }`}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" strokeWidth={2.5} />
+                  <Icon className="flex-shrink-0 w-5 h-5" strokeWidth={2.5} />
                   {sidebarOpen && <span className="text-sm">{item.name}</span>}
-                  {sidebarOpen && isActive && <ChevronRight className="h-4 w-4 ml-auto" />}
+                  {sidebarOpen && isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </button>
               );
             })}
@@ -67,10 +105,9 @@ function App() {
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
           <div className="p-8">
-            {currentView === 'dashboard' && <Dashboard />}
-            {currentView === 'simulate' && <SimulationConfig />}
-            {currentView === 'results' && <ResultsView />}
-            {currentView === 'data' && <DataManager />}
+            {currentView === "simulate" && <SimulationConfig />}
+            {currentView === "results" && <ResultsView />}
+            {currentView === "analysis" && <AnalysisPage />}
           </div>
         </main>
       </div>
@@ -78,4 +115,12 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <SimulationProvider>
+        <Shell />
+      </SimulationProvider>
+    </ErrorBoundary>
+  );
+}
