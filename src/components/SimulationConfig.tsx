@@ -25,15 +25,14 @@ export default function SimulationConfig() {
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-3">Molecular System</label>
               <div className="space-y-3">
-                <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-blue-400 hover:bg-blue-50/50 transition-colors cursor-pointer">
-                  <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                  <p className="text-sm text-slate-600 text-center font-medium">Upload .xyz geometry file</p>
-                  <p className="text-xs text-slate-400 text-center mt-1">or drag and drop here</p>
-                </div>
                 <select className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-700 font-medium">
-                  <option>NH₃BH₃ + H₂ (default)</option>
+                  <option>H₂</option>
+                  <option>NH₃BH₃</option>
+                  <option>FLP</option>
+                  <option>NH₃BH₃ + FLP</option>
                   <option>NH₃BH₃ + FLP + H₂</option>
-                  <option>Custom geometry</option>
+                  <option>NH₃BH₃ + 2H₂ + FLP</option>
+                  <option></option>
                 </select>
               </div>
             </div>
