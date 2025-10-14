@@ -156,6 +156,7 @@ export default function SimulationConfig() {
                 onChange={(e) => setBasisSet(e.target.value)}
                 className="w-full px-4 py-3 font-medium bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-700"
               >
+                <option>STO-3G</option>
                 <option>def2-TZVP</option>
                 <option>def2-QZVPP</option>
                 <option>cc-pVTZ</option>
