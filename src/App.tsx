@@ -95,7 +95,7 @@ function Shell() {
       id: "video",
       name: "Video",
       icon: PlayCircle,
-      url: "https://video-link.com",
+      url: "https://shkumar5-india.github.io/Video/",
     },
   ];
 
