@@ -89,7 +89,7 @@ function Shell() {
       id: "prototype",
       name: "Prototype",
       icon: Layers,
-      url: "https://prototype-link.com",
+      url: "https://qiskitsimulation.streamlit.app/",
     },
     {
       id: "video",
