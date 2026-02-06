@@ -92,6 +92,12 @@ function Shell() {
       url: "https://qiskitsimulation.streamlit.app/",
     },
     {
+      id: "prototype",
+      name: "Prototype Using COBYLA",
+      icon: Layers,
+      url: "https://COBYLA.streamlit.app/",
+    },
+    {
       id: "video",
       name: "Video",
       icon: PlayCircle,
